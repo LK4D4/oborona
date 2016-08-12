@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io"
 	"log"
 	"math/rand"
@@ -101,13 +100,14 @@ var generatorStrings = [][]string{
 	},
 }
 
-var port = flag.Int("port", 5000, "listen port")
+var listen = flag.String("l", "localhost:5000", "listen address")
 
 func main() {
+	flag.Parse()
 	rand.Seed(time.Now().UnixNano())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, GenOborona(generatorStrings))
 	})
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
-
+	log.Printf("Listen on %s", *listen)
+	log.Fatal(http.ListenAndServe(*listen, nil))
 }
